@@ -1,0 +1,6 @@
+name: myapp
+
+services:
+  foo:
+    image: myapp
+    command: echo "I'm running ${COMPOSE_PROJECT_NAME}"
