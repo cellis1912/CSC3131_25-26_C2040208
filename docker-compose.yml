@@ -1,6 +1,24 @@
-name: myapp
+name: 'CSC3131_app'
+version: '3.8'
 
 services:
-  foo:
-    image: myapp
-    command: echo "I'm running ${COMPOSE_PROJECT_NAME}"
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: jobdb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    build: ./app
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://myuser:mypassword@db:5432/mydatabase
+
+volumes:
+  pgdata:
