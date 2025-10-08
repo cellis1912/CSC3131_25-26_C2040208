@@ -1,24 +1,37 @@
-name: 'CSC3131_app'
-version: '3.8'
+version: "3.9"
 
 services:
   db:
-    image: postgres:15
+    image: postgres:16
+    container_name: postgres_db
+    restart: always
     environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass
       POSTGRES_DB: jobdb
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-    volumes:
-      - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      retries: 10
+      start_period: 5s
 
-  app:
-    build: ./app
+  web:
+    build: .
+    container_name: flask_app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://myuser:mypassword@db:5432/mydatabase
+      POSTGRES_HOST: db
+      POSTGRES_DB: jobdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass
+    ports:
+      - "5000:5000"
 
 volumes:
-  pgdata:
+  postgres_data:
