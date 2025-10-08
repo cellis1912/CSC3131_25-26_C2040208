@@ -1,63 +1,57 @@
-import os
-import time
-import psycopg2
+from flask import Flask, jsonify, render_template
+from db import db_connect
 from psycopg2 import sql
-from flask import Flask
-'''
+import os
+
+#host = os.getenv("POSTGRES_HOST", "localhost")
+
 app = Flask(__name__)
+conn = db_connect()
+print(conn)
 
 @app.route("/")
-def hello():
-    return {"Hello": "World"}
+def index():
+    return render_template("index.html")
 
 @app.route("/health")
 def health():
     return {"status": "ok"}
 
+@app.route("/jobs")
+def get_jobs():
+    if conn is None:
+        return {"error": "Database connection not initialized"}, 500
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT id, title, person, time_estimate, created_at FROM job_allocations;")
+            rows = cur.fetchall()
+            jobs = []
+            for row in rows:
+                jobs.append({
+                    "id": row[0],
+                    "title": row[1],
+                    "person": row[2],
+                    "time_estimate": float(row[3]),
+                    "created_at": str(row[4])
+                })
+            return jsonify(jobs)
+    except Exception as e:
+        return {"error": str(e)}, 500
+
+
+@app.route("/add-job")
+def add_job():
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO job_allocations (title, person, time_estimate)
+                VALUES (%s, %s, %s) RETURNING id;
+            """, ("Example Job", "Alice", 3.5))
+            conn.commit()
+            new_id = cur.fetchone()[0]
+            return {"message": "Job added", "id": new_id}
+    except Exception as e:
+        return {"error": str(e)}, 500
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-'''
-# Wait for the database to be ready
-# This is a robust way to ensure the app doesn't try to connect too early
-time.sleep(10)
-# Database connection parameters
-dbname = 'your_database'
-user = 'your_usernamePOSTGRES'
-password = 'pass'
-host = 'localhost'  # or your database host
-port = '5432'       # default PostgreSQL port6432
-
-# Establish the connection
-try:
-    conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
-    print("Connected to the database.")
-    
-    with conn.cursor() as cur:
-        # Create a table and insert data
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS job_allocations (
-            id SERIAL PRIMARY KEY,
-            title VARCHAR(255) NOT NULL,
-            person VARCHAR(255) NOT NULL,
-            time_estimate DECIMAL(5, 2) NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-        """)
-
-        print("Table 'job_allocations' created successfully.")
-        conn.commit()
-
-        # Query the database
-        cur.execute("SELECT * FROM us job_allocations;")
-        records = cur.fetchall()
-        print("Connected to PostgreSQL and retrieved data:", records)
-
-except Exception as e:
-    print(f"An error occurred: {e}")
-
-finally:
-    # Close the cursor and connection
-    if conn:
-        cur.close()
-        conn.close()
-        print("Connection closed.")
