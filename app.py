@@ -1,12 +1,14 @@
 from flask import Flask, jsonify, render_template
-from db import db_connect
+from db import db_connect, add_jobs_og
 from psycopg2 import sql
 import os
 
-#host = os.getenv("POSTGRES_HOST", "localhost")
+host = os.getenv("POSTGRES_HOST", "localhost")
 
 app = Flask(__name__)
 conn = db_connect()
+add_jobs_og(conn)
+
 print(conn)
 
 @app.route("/")
