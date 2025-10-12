@@ -3,35 +3,26 @@ version: "3.9"
 services:
   db:
     image: postgres:16
-    container_name: postgres_db
-    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: jobdb
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 2s
-      retries: 10
-      start_period: 5s
 
   web:
     build: .
-    container_name: flask_app
-    depends_on:
-      db:
-        condition: service_healthy
     environment:
       POSTGRES_HOST: db
       POSTGRES_DB: jobdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pass
+      POSTGRES_PORT: 5432
+    depends_on:
+      - db
     ports:
       - "5000:5000"
 
 volumes:
   postgres_data:
+
