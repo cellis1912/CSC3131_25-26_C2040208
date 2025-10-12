@@ -8,6 +8,8 @@
 <body>
     <h1>Job Allocations</h1>
     <a href="/add-job">Add Job</a>
+    <a href="/jobs">Edit/Delete Jobs</a>
+
     <table id="jobs-table">
         <thead>
             <tr>
@@ -19,27 +21,16 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Rows will be filled by JS -->
+            {% for job in entries %}
+            <tr>
+                <td>{{ job[0] }}</td>
+                <td>{{ job[1] }}</td>
+                <td>{{ job[2] }}</td>
+                <td>{{ job[3] }}</td>
+                <td>{{ job[4] }}</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
-
-    <script>
-        fetch('/jobs')
-            .then(res => res.json())
-            .then(data => {
-                const tbody = document.querySelector('#jobs-table tbody');
-                data.forEach(job => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${job.id}</td>
-                        <td>${job.title}</td>
-                        <td>${job.person}</td>
-                        <td>${job.time_estimate}</td>
-                        <td>${job.created_at}</td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            });
-    </script>
 </body>
 </html>
