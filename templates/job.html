@@ -1,0 +1,76 @@
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Editable Table</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table { border-collapse: collapse; width: 50%; }
+        th, td { border: 1px solid black; padding: 8px; text-align: center; }
+        input { width: 100%; box-sizing: border-box; }
+        button { margin: 2px; }
+    </style>
+</head>
+<body>
+    <h2>Job Table</h2>
+    <a href="/">Home</a>
+    <a href="/add-job">Add Job</a>
+    <br>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Person</th>
+                <th>Estimated Time</th>
+                <th>Time Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+            <tr data-id="{{ entry[0] }}">
+                <td>{{ entry[0] }}</td>
+                <td><input type="text" value="{{ entry[1] }}" class="edit-title"></td>
+                <td><input type="text" value="{{ entry[2] }}" class="edit-person"></td>
+                <td><input type="text" value="{{ entry[3] }}" class="edit-time_estimate"></td>
+                <td>{{ entry[4] }}</td>
+                <td>
+                    <button class="save-btn">Save</button>
+                    <button class="delete-btn">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+            // Delete entry
+            $('.delete-btn').click(function() {
+                let row = $(this).closest('tr');
+                let id = row.data('id');
+                $.post('jobs/delete/' + id, {}, function(data) {
+                    if (data.success) {
+                        row.remove();
+                    }
+                });
+            });
+
+            // Save entry
+            $('.save-btn').click(function() {
+                let row = $(this).closest('tr');
+                let id = row.data('id');
+                let title = row.find('.edit-title').val();
+                let person = row.find('.edit-person').val();
+                let time_estimate = row.find('.edit-time_estimate').val();
+                $.post('jobs/edit/' + id, {title: title, person: person, time_estimate: time_estimate}, function(data) {
+                    if (data.success) {
+                        alert('Entry updated!');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

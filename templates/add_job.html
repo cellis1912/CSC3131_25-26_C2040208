@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Job Form</title>
+    <style>
+        .success-message { display: none; color: green; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="add-job-container">
+        <div class="job-card">
+            <div class="job-header">
+                <h2>Add Job</h2>
+                <p>Enter the job details into the required fields</p>
+            </div>
+            
+            <form class="job-form" id="jobForm" novalidate>
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <input type="title" id="title" name="title" required autocomplete="title">
+                        <label for="title">Job Title</label>
+                    </div>
+                    <span class="error-message" id="titleError"></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <input type="person" id="person" name="person" required autocomplete="person">
+                        <label for="person">Assigned Person</label>
+                    </div>
+                    <span class="error-message" id="personError"></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <input type="number" id="time" name="time" required autocomplete="time">
+                        <label for="time">Estimated time (hours)</label>
+                    </div>
+                    <span class="error-message" id="personError"></span>
+                </div>
+
+                <button type="submit" class="Submit-btn">
+                    <span class="btn-text">Submit</span>
+                    <span class="btn-loader"></span>
+                </button>
+            </form>
+
+            <div class="success-message" id="successMessage">
+                <div class="success-icon">✓</div>
+                <h3>Job Added Successfully!</h3>
+            </div>
+
+             <div class="success-message" id="successMessage">
+                <div class="success-icon">✓</div>
+                <h3>Job Added Successfully!</h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const jobForm = document.getElementById("jobForm");
+        const successDiv = document.getElementById("successMessage");
+
+        jobForm.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            successDiv.style.display = "none"; // hide by default
+
+            const title = document.getElementById("title").value.trim();
+            const person = document.getElementById("person").value.trim();
+            const time = document.getElementById("time").value.trim();
+
+            if (!title || !person || !time) {
+                alert("Please fill in all fields");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("title", title);
+            formData.append("person", person);
+            formData.append("time", time);
+
+            try {
+                const response = await fetch("/add-job", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    successDiv.style.display = "block"; // only show on success
+                    jobForm.reset();
+                } else {
+                    alert("Error: " + (data.error || "Failed to add job"));
+                }
+            } catch (err) {
+                alert("Error: " + err);
+            }
+        });
+    </script>
+</body>
+</html>
