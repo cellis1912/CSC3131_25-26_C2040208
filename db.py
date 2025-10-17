@@ -3,11 +3,10 @@ import time
 import psycopg2
 from psycopg2 import sql
 
-# Read from environment (with sensible defaults for local dev)
 dbname = os.getenv("POSTGRES_DB", "jobdb")
 user = os.getenv("POSTGRES_USER", "postgres")
 password = os.getenv("POSTGRES_PASSWORD", "pass")
-host = os.getenv("POSTGRES_HOST", "db")  # 'db' if using Docker, 'localhost' locally
+host = os.getenv("POSTGRES_HOST", "db")
 port = os.getenv("POSTGRES_PORT", "5432")
 
 def db_connect(retries=5, delay=3):
