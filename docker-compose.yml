@@ -9,6 +9,8 @@ services:
       POSTGRES_DB: jobdb
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432" 
 
   web:
     build: .
@@ -25,4 +27,3 @@ services:
 
 volumes:
   postgres_data:
-
