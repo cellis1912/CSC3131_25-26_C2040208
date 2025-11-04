@@ -3,15 +3,21 @@ import time
 import psycopg2
 from psycopg2 import sql
 
-# Read from environment (with sensible defaults for local dev)
-dbname = os.getenv("POSTGRES_DB", "jobdb")
-user = os.getenv("POSTGRES_USER", "postgres")
-password = os.getenv("POSTGRES_PASSWORD", "pass")
-host = os.getenv("POSTGRES_HOST", "db")  # 'db' if using Docker, 'localhost' locally
-port = os.getenv("POSTGRES_PORT", "5432")
+dbname = os.getenv("PGDATABASE", "jobdb")
+user = os.getenv("PGUSER", "postgres")
+password = os.getenv("PGPASSWORD", "pass")
+host = os.getenv("PGHOST", "db") 
+port = os.getenv("PGPORT", "5432")
+ssl_mode = os.getenv("PGSSL", "allow")
 
 def db_connect(retries=5, delay=3):
     """Try connecting to PostgreSQL with retries."""
+    print(f"Connecting with settings:")
+    print(f"  Host: {host}")
+    print(f"  User: {user}")
+    print(f"  DB: {dbname}")
+    print(f"  SSL: {ssl_mode}")
+
     for attempt in range(retries):
         try:
             conn = psycopg2.connect(
@@ -19,9 +25,10 @@ def db_connect(retries=5, delay=3):
                 user=user,
                 password=password,
                 host=host,
-                port=port
+                port=port,
+                sslmode=ssl_mode
             )
-            print(f"Connected to Postgres at {host}:{port}, DB: {dbname}")
+            print(f"Connected to Postgres successfully!")
             return conn
         except Exception as e:
             print(f"Connection attempt {attempt+1} failed: {e}")

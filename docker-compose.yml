@@ -2,10 +2,10 @@ version: "3.9"
 
 services:
   db:
-    image: postgres:16
+    image: postgres:17
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: pass
+      POSTGRES_PASSWORD: pass1234!
       POSTGRES_DB: jobdb
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -13,11 +13,12 @@ services:
   web:
     build: .
     environment:
-      POSTGRES_HOST: db
-      POSTGRES_DB: jobdb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: pass
-      POSTGRES_PORT: 5432
+      PGHOST: c2040208.postgres.database.azure.com
+      PGDATABASE: postgres
+      PGUSER: postgres@c2040208
+      PGPASSWORD: pass1234!
+      PGPORT: 5432
+      PGSSL: require
     depends_on:
       - db
     ports:
