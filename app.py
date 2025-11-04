@@ -1,9 +1,19 @@
 from flask import Flask, jsonify, render_template, request, g
-from db import db_connect
+from db import db_connect, init_db
 import psycopg2
 import os
 
 app = Flask(__name__)
+
+try:
+    print("Initializing database...")
+    conn = db_connect() 
+    init_db(conn) 
+    conn.close()  
+    print("Database is ready.")
+except Exception as e:
+    print(f"FATAL ERROR: Could not initialize database: {e}")
+
 
 def get_db():
     """Get a DB connection for this request."""
