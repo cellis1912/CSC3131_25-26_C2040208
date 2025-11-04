@@ -1,4 +1,5 @@
 import os
+print(f"--- AZURE DEBUG: My app is starting. DATABASE_URL = {os.getenv('DATABASE_URL')} ---")
 import time
 import psycopg2
 from psycopg2 import sql
