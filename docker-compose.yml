@@ -9,6 +9,8 @@ services:
       POSTGRES_DB: jobdb
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432" 
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -29,7 +31,6 @@ services:
         condition: service_healthy
     networks:
       - backend
-    # Optional: enable scaling and auto-restart
     deploy:
       replicas: 3
       restart_policy:
@@ -47,7 +48,3 @@ services:
       - backend
 
 volumes:
-  postgres_data:
-
-networks:
-  backend:

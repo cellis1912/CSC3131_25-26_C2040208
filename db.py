@@ -1,27 +1,38 @@
 import os
+print(f"--- AZURE DEBUG: My app is starting. DATABASE_URL = {os.getenv('DATABASE_URL')} ---")
 import time
 import psycopg2
-from psycopg2 import sql
 
-dbname = os.getenv("POSTGRES_DB", "jobdb")
-user = os.getenv("POSTGRES_USER", "postgres")
-password = os.getenv("POSTGRES_PASSWORD", "pass")
-host = os.getenv("POSTGRES_HOST", "db")
-port = os.getenv("POSTGRES_PORT", "5432")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+
+dbname_local = os.getenv("POSTGRES_DB", "jobdb")
+user_local = os.getenv("POSTGRES_USER", "postgres")
+password_local = os.getenv("POSTGRES_PASSWORD", "pass")
+host_local = os.getenv("POSTGRES_HOST", "localhost") 
+port_local = os.getenv("POSTGRES_PORT", "5432")
+
 
 def db_connect(retries=5, delay=3):
     """Try connecting to PostgreSQL with retries."""
     for attempt in range(retries):
         try:
-            conn = psycopg2.connect(
-                dbname=dbname,
-                user=user,
-                password=password,
-                host=host,
-                port=port
-            )
-            print(f"Connected to Postgres at {host}:{port}, DB: {dbname}")
+            if DATABASE_URL:
+                conn = psycopg2.connect(DATABASE_URL)
+                print(f"Connected to Postgres via DATABASE_URL.")
+            else:
+                print(f"DATABASE_URL not found. Attempting local connection to {host_local}...")
+                conn = psycopg2.connect(
+                    dbname=dbname_local,
+                    user=user_local,
+                    password=password_local,
+                    host=host_local,
+                    port=port_local
+                )
+                print(f"Connected to local Postgres at {host_local}:{port_local}")
+            print(f"Connection attempt {attempt+1} successful.")
             return conn
+            
         except Exception as e:
             print(f"Connection attempt {attempt+1} failed: {e}")
             time.sleep(delay)

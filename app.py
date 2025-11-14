@@ -1,8 +1,7 @@
 from flask import Flask, jsonify, render_template, request, g
-from db import db_connect, init_db, add_jobs_og
+from db import db_connect
+from db import db_connect
 import logging
-import psycopg2
-import os
 import sys
 
 logging.basicConfig(
