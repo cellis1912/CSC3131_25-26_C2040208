@@ -1,4 +1,5 @@
 flask
+pytest
 uvicorn[standard]
 gunicorn
 psycopg2.binary
