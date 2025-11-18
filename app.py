@@ -1,4 +1,6 @@
 from flask import Flask, jsonify, render_template, request, g
+from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+import time
 from db import db_connect
 from db import db_connect
 import logging
@@ -10,11 +12,58 @@ logging.basicConfig(
     format='%(asctime)s %(levelname)s: %(message)s'
 )
 
+REQUEST_COUNT = Counter(
+    "flask_request_total",
+    "Total HTTP requests",
+    ["method", "endpoint", "http_status"]
+)
+
+REQUEST_LATENCY = Histogram(
+    "flask_request_latency_seconds",
+    "Time spent processing request",
+    ["endpoint"]
+)
+
+EXCEPTIONS = Counter(
+    "flask_exceptions_total",
+    "Total exceptions raised",
+    ["endpoint"]
+)
+
 app = Flask(__name__)
 
 @app.before_request
 def log_request_info():
+    g.start_time = time.time()
     logging.info(f"Incoming request: {request.method} {request.path}")
+
+@app.after_request
+def after_request(response):
+    endpoint = request.endpoint if request.endpoint else "unknown"
+
+    REQUEST_COUNT.labels(
+        method=request.method,
+        endpoint=endpoint,
+        http_status=response.status_code
+    ).inc()
+
+    REQUEST_LATENCY.labels(endpoint=endpoint).observe(
+        time.time() - g.start_time
+    )
+
+    return response
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    endpoint = request.endpoint if request.endpoint else "unknown"
+    EXCEPTIONS.labels(endpoint=endpoint).inc()
+    logging.error(f"Unhandled exception: {str(e)}")
+    return jsonify({"error": "Internal server error"}), 500
+
+@app.route("/metrics")
+def metrics():
+    return generate_latest(), 200, {"Content-Type": CONTENT_TYPE_LATEST}
+
 
 def get_db():
     if 'db' not in g:
