@@ -8,7 +8,6 @@ def client():
     with app.test_client() as client:
         yield client
 
-# --- Helper: mock DB cursor + connection ---
 class MockCursor:
     def __init__(self, return_value=None):
         self.return_value = return_value or []
@@ -41,10 +40,6 @@ class MockDB:
     def close(self):
         pass
 
-
-# ---------------------
-#       TESTS
-# ---------------------
 
 @patch("app.db_connect", return_value=MockDB())
 def test_health(mock_db, client):
