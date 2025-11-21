@@ -1,9 +1,10 @@
+
 name: Deploy to Azure Web App
 
 on:
   push:
     branches:
-      - Azure-deploy-test # or your default branch
+      - Azure-deploy-test
 
 jobs:
   build-and-deploy:
@@ -18,15 +19,16 @@ jobs:
       with:
         username: onlyc
         password: pass12341
+
     - name: Build Docker image
-      run: docker build -t onlyc/<image-name>:latest .
+      run: docker build -t onlyc/myapp:latest .
 
     - name: Push Docker image
-      run: docker push onlyc/<image-name>:latest
+      run: docker push onlyc/myapp:latest
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
-        app-name: <your-app-name>
+        app-name: CSC3131webapp
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        images: onlyc/<image-name>:latest
+        images: onlyc/myapp:latest
