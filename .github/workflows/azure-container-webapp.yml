@@ -52,8 +52,8 @@ jobs:
         with:
           registry: ghcr.io
           username: cellis1912
-          password: ${{ secrets.GHCR_PAT }}
-          
+          password: ${{ github.token }}
+
       - name: Lowercase the repo name and username
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
 
@@ -61,7 +61,7 @@ jobs:
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           push: true
-          tags: ghcr.io/${{ env.REPO }}:${{ github.sha }}
+          tags: ghcr.io/cellis1912/csc3131_25-26_c2040208:${{ github.sha }}
           file: ./Dockerfile
 
   deploy:
