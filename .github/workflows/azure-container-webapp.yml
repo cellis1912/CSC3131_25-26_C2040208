@@ -1,10 +1,9 @@
-
 name: Deploy to Azure Web App
 
 on:
   push:
     branches:
-      - Azure-deploy-test
+      - main
 
 jobs:
   build-and-deploy:
