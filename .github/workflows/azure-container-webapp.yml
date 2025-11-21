@@ -19,14 +19,14 @@ jobs:
         username: onlyc
         password: pass12341
     - name: Build Docker image
-      run: docker build -t <dockerhub-username>/<image-name>:latest .
+      run: docker build -t onlyc/<image-name>:latest .
 
     - name: Push Docker image
-      run: docker push <dockerhub-username>/<image-name>:latest
+      run: docker push onlyc/<image-name>:latest
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
         app-name: <your-app-name>
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        images: <dockerhub-username>/<image-name>:latest
+        images: onlyc/<image-name>:latest
