@@ -16,7 +16,7 @@ jobs:
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
-        username: c.ellis1@newcastle.ac.uk
+        username: onlyc
         password: CrS359cRs359
     - name: Build Docker image
       run: docker build -t <dockerhub-username>/<image-name>:latest .
