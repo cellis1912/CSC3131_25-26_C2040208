@@ -9,9 +9,12 @@ Puikinsh (no date) login-forms/forms/basic/index.html at main · puikinsh/login-
 
 // DELETE BEFORE SUBMISSION //
 
-## **Architecture Diagram**------------------------------------------------------------------- **CI/CD Workflow Diagram**
+## **Architecture Diagram**
+<img width="500" height="1260" alt="Blank diagram (1)" src="https://github.com/user-attachments/assets/ca62443b-2dc9-40c5-b5c6-b9584d12aaa2" />
 
-<img width="1940" height="1280" alt="Blank diagram (3)" src="https://github.com/user-attachments/assets/8b8081f5-7d63-492f-85fa-3f4018d5839c" />
+##**CI/CD Workflow Diagram**
+<img width="1160" height="612" alt="Blank diagram (3)" src="https://github.com/user-attachments/assets/995c2d1d-17bf-4d0a-9662-2658dc453bae" />
+
 
 
 ### Trigger Strategy
