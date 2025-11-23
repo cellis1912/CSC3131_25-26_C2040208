@@ -8,7 +8,7 @@ docker-compose down
 
 Architecture Diagram
 
-<img width="500" height="1260" alt="Blank diagram (1)" src="https://github.com/user-attachments/assets/86e6e170-6fb2-4f36-b195-46ed6e789d7e" />
+<img width="1940" height="1280" alt="Blank diagram (3)" src="https://github.com/user-attachments/assets/8b8081f5-7d63-492f-85fa-3f4018d5839c" />
 
 CI/CD Workflow Diagram
 GitHub Repo
