@@ -7,6 +7,7 @@ docker-compose down
 // DELETE BEFORE SUBMISSION //
 
 Architecture Diagram
+
 <img width="500" height="1260" alt="Blank diagram (1)" src="https://github.com/user-attachments/assets/86e6e170-6fb2-4f36-b195-46ed6e789d7e" />
 
 CI/CD Workflow Diagram
