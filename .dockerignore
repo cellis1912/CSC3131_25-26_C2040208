@@ -1,0 +1,52 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Logs
+*.log
+logs/
+
+# Git
+.git/
+.gitignore
+
+# Docker & compose
+docker-compose.yaml
+docker-compose.yml
+docker-compose.override.yml
+*.dockerignore
+
+# Environment files (IMPORTANT)
+.env
+*.env
+.env.*
+
+
+# Bytecode / compiled
+*.so
+
+# Cache dirs
+.cache/
+pytest_cache/
+coverage/
+
+# Node (if at any point you add JS tooling)
+node_modules/
+
+# Prometheus / Grafana runtime data
+prometheus-data/
+grafana-data/
+
+# Don't send local configs or secrets
+prometheus.yml
+nginx.conf
+
+# Avoid sending docker volumes
+postgres_data/
