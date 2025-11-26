@@ -3,7 +3,7 @@ name: Deploy to Azure Web App
 on:
   push:
     branches:
-      - Git secrets
+      - Git-secrets
 
 jobs:
   build-and-deploy:
