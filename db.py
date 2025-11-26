@@ -6,11 +6,11 @@ import psycopg2
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 
-dbname_local = os.getenv("POSTGRES_DB", "jobdb")
-user_local = os.getenv("POSTGRES_USER", "postgres")
-password_local = os.getenv("POSTGRES_PASSWORD", "pass")
-host_local = os.getenv("POSTGRES_HOST", "localhost") 
-port_local = os.getenv("POSTGRES_PORT", "5432")
+dbname_local = os.getenv("POSTGRES_DB")
+user_local = os.getenv("POSTGRES_USER")
+password_local = os.getenv("POSTGRES_PASSWORD")
+host_local = os.getenv("POSTGRES_HOST") 
+port_local = os.getenv("POSTGRES_PORT")
 
 
 def db_connect(retries=5, delay=3):
