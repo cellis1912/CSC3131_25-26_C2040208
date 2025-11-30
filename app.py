@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, request, g
 from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
 import time
-from db import db_connect, init_db, add_jobs_og
+from db import db_connect, init_db, add_jobs_og, delete_all_rows
 import logging
 import sys
 
@@ -69,8 +69,10 @@ def get_db():
         logging.info("Opening DB connection")
         g.db = db_connect()
         init_db(g.db)
-        add_jobs_og(g.db)
+        #delete_all_rows(g.db)
+        #add_jobs_og(g.db)
     return g.db
+
 
 @app.teardown_appcontext
 def close_db(exception=None):
