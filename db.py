@@ -58,6 +58,16 @@ def init_db(conn):
         print(f"Error creating table: {e}")
         conn.rollback()
 
+def delete_all_rows(conn):
+    try:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM job_allocations;")
+            conn.commit()
+            print("All rows deleted from job_allocations.")
+    except Exception as e:
+        print(f"Error deleting rows: {e}")
+        conn.rollback()
+
 
 def populate_jobs(conn, jobs):
     try:
