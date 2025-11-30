@@ -95,13 +95,9 @@ The application exposes metrics and uses Gunicorn for concurrency.
 
 /templates      - HTML templates
 
-/static         - CSS/JS
-
 requirements.txt
 
 Dockerfile
-
-.github/workflows/deploy.yml
 
 ### How to Onboard
 - Clone the repository
