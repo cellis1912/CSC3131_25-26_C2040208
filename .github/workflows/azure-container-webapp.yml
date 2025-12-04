@@ -1,47 +1,59 @@
-name: Deploy to Azure Web App
+name: Test and Deploy
 
 on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
-  call-tests:
-    uses: ./.github/workflows/test.yml
-
-  build-and-deploy:
-    needs: call-tests
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout repo
+      uses: actions/checkout@v3
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
 
-      - name: Build Docker image
-        run: docker build -t onlyc/myapp:latest .
+    - name: Add project to PYTHONPATH
+      run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
 
-      - name: Push Docker image
-        run: docker push onlyc/myapp:latest
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-flask
 
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: CSC3131webapp
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: onlyc/myapp:latest
-      
-      - name: Configure Application Settings (Database connection)
-        uses: azure/cli@v1
-        with:
-          inlineScript: |
-            POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
-            POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
-            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
-            POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} \
-            POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
+    - name: Run tests
+      run: pytest -v
+
+  build-and-deploy:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Docker image
+      run: docker build -t onlyc/myapp:latest .
+
+    - name: Push Docker image
+      run: docker push onlyc/myapp:latest
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: CSC3131webapp
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        images: onlyc/myapp:latest
